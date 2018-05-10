@@ -12,6 +12,7 @@ public class aiMode_init : MonoBehaviour {
 	public GameObject bonusChar;
 	public GameObject endGameCanvas;
 	public GameObject blueWinText;
+	public GameObject TooManyMovesText;
 	public GameObject redWinText;
 	public GameObject spentTimeText;
 	public GameObject scoreText;
@@ -444,12 +445,14 @@ public class aiMode_init : MonoBehaviour {
 			if (winner.Equals ("blue")) {
 				AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
 				blueWinText.SetActive (true);
-				if (limitMoves && blueEdgeRespond.moveCount > maxMoves) {
-					blueWinText.GetComponent<Text>().text = "You use too many moves!";
+				if (limitMoves && blueEdgeRespond.moveCount++ > maxMoves) {
+					blueWinText.SetActive (false);
+					TooManyMovesText.SetActive (true);
 					replayButton.SetActive (true);
 					nextButton.SetActive (false);
 				} else {
-					blueWinText.GetComponent<Text>().text = "You win!";
+					blueWinText.SetActive (true);
+					TooManyMovesText.SetActive (false);
 					replayButton.SetActive (false);
 					nextButton.SetActive (true);
 				}
@@ -472,6 +475,7 @@ public class aiMode_init : MonoBehaviour {
 	public void reset(){
 		nodeNo = 0;
 		limitBridges = false;
+		limitMoves = false;
 		mustConnect = false;
 		blinking = false;
 		level = 1;

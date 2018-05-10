@@ -113,8 +113,12 @@ public class blueEdgeRespond : MonoBehaviour {
 					visitRow [row, col] = true;	//as a visit
 					stepCount++;
 					if (aiMode_init.limitMoves) {
-						moveCount++;
-						aiMode_init.updateMoves ();
+						if (moveCount++ > aiMode_init.maxMoves)
+							Camera.main.SendMessage ("endgame", "blue");
+						else {
+							moveCount++;
+							aiMode_init.updateMoves ();
+						}
 					}
 					changeAlpha (255, this.transform);//display edge
 					int size = aiMode_init.maxCol;
@@ -152,8 +156,12 @@ public class blueEdgeRespond : MonoBehaviour {
 					visitCol [row, col] = true;	//as a visit
 					stepCount++;
 					if (aiMode_init.limitMoves) {
-						moveCount++;
-						aiMode_init.updateMoves ();
+						if (moveCount++ > aiMode_init.maxMoves)
+							Camera.main.SendMessage ("endgame", "blue");
+						else {
+							moveCount++;
+							aiMode_init.updateMoves ();
+						}
 					}
 					changeAlpha (255, this.transform);
 					Debug.Log ("set resistance at " + (row*aiMode_init.maxCol+col));
