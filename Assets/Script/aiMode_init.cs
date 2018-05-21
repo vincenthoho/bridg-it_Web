@@ -55,6 +55,8 @@ public class aiMode_init : MonoBehaviour {
 	public static bool limitMoves = false;
 	private static bool blinking = false;
 	private static bool blinkingText = false;
+	public static int blinkSpeed = 50;
+	private static int counter = 0, count = 0;
 	public static int nodeNo = 0;
 	public static int maxBridges = 10;
 	public static int blueBridges = 10;
@@ -67,9 +69,10 @@ public class aiMode_init : MonoBehaviour {
 	public static GameObject redoButton;
 
 	private static ArrayList aiMoves = new ArrayList();
-	
+
 	// Use this for initialization
 	void Start () {
+		Time.timeScale = 1;
 		cam = GetComponent<Camera> ();
 		RectTransform CanvasRect = canvas.GetComponent<RectTransform> ();
 		turntext = tmp_turnText;
@@ -276,10 +279,29 @@ public class aiMode_init : MonoBehaviour {
 	}
 
 	void Update(){
+		//Time.timeScale = 1;
+		/*
 		if (limitBridges && blueBridges < 2 && !blinking)
 			StartCoroutine (blinkText());
 		if (limitMoves && limitBridges && !blinkingText)
 			StartCoroutine (switchText ());
+		*/
+
+		if (limitMoves && limitBridges) {
+			if (counter == blinkSpeed) {
+				blinkingText = !blinkingText;
+				if (blinkingText) {
+					moveTopic.SetActive (false);
+					bridgeTopic.SetActive (true);
+				} else {
+					bridgeTopic.SetActive (false);
+					moveTopic.SetActive (true);
+				}
+				counter = 0;
+			}
+		}
+
+		counter++;
 	}
 
 	private IEnumerator blinkText(){
@@ -298,10 +320,13 @@ public class aiMode_init : MonoBehaviour {
 
 	private IEnumerator switchText(){
 		blinkingText = true;
+		Debug.Log ("<color=red>blinking text</color>");
 		while (true) {
+			Debug.Log ("<color=red>blinking text1</color>");
 			moveTopic.SetActive (false);
 			bridgeTopic.SetActive (true);
 			yield return new WaitForSeconds (1.5f);
+			Debug.Log ("<color=red>blinking text2</color>");
 			bridgeTopic.SetActive (false);
 			moveTopic.SetActive (true);
 			yield return new WaitForSeconds (1.5f);
@@ -451,14 +476,14 @@ public class aiMode_init : MonoBehaviour {
 			UIpanel.SetActive (true);
 		
 			if (winner.Equals ("blue")) {
-				AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
-				blueWinText.SetActive (true);
 				if (limitMoves && blueEdgeRespond.moveCount > maxMoves) {
+					AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
 					blueWinText.SetActive (false);
 					TooManyMovesText.SetActive (true);
 					replayButton.SetActive (true);
 					nextButton.SetActive (false);
 				} else {
+					AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
 					blueWinText.SetActive (true);
 					TooManyMovesText.SetActive (false);
 					replayButton.SetActive (false);
@@ -482,6 +507,7 @@ public class aiMode_init : MonoBehaviour {
 	}
 
 	public static void reset(){
+		Time.timeScale = 1;
 		nodeNo = 0;
 		limitBridges = false;
 		limitMoves = false;

@@ -62,7 +62,6 @@ public class redEdgeRespond : MonoBehaviour {
 					if (win ())
 						checkWin = true;
 					else {
-						multi_init.switchTurn ("player");
 						blueEdgeRespond.raiseTurn ();
 					}
 				}
@@ -83,7 +82,6 @@ public class redEdgeRespond : MonoBehaviour {
 					if (win ())
 						checkWin = true;
 					else{
-						multi_init.switchTurn ("player");
 						blueEdgeRespond.raiseTurn();
 					}
 				}
@@ -129,32 +127,6 @@ public class redEdgeRespond : MonoBehaviour {
 		bool won = false;
 		ArrayList foundRowList;
 		
-		if (stepCount >= multi_init.totalLength) {
-			//find start edge
-			for (int i = 0; i < multi_init.totalLength; i++){
-				if(visitRow[i,0] ==  true){
-					foundRowList = new ArrayList ();
-					Coordination cord = new Coordination(i,0);
-					foundRowList.Add(cord);
-					won = findNextEdge(i,0,1,foundRowList);
-					if (won) {
-						Camera.main.SendMessage("disableButtons");
-
-						ArrayList path = new ArrayList ();
-						//set first path
-						Coordination coor = (Coordination)foundRowList[0];
-						addPath (coor.getX (), coor.getY (), path);
-						addPath (coor.getX (), coor.getY ()+1, path);
-						Coordination c = new Coordination (coor.getX (), coor.getY ()+1);
-						setPathArray (c, path);
-
-						character.winAnimation(path);
-						break;
-					}
-				}
-			}
-		}
-		
 		return won;
 	}
 
@@ -171,8 +143,6 @@ public class redEdgeRespond : MonoBehaviour {
 		bool pathFound = false;
 
 		//path finding finished
-		if (c.getY () == multi_init.totalLength)
-			return true;
 
 		//find path upward
 		if (!pathFound && c.getX () - 1 >= 0) {
@@ -187,16 +157,6 @@ public class redEdgeRespond : MonoBehaviour {
 		}
 
 		//find path downward
-		if (!pathFound && c.getX () + 1 <= (multi_init.totalLength-1)) {
-			if (visitCol [c.getX (), c.getY ()] == true) {
-				Vector3 pos = redNodeArray [c.getX()+1, c.getY()].GetComponent<RectTransform> ().anchoredPosition3D;
-				if (!path.Contains (new Vector3 (pos.x, pos.y + 19.5f, pos.z))) {
-					addPath (c.getX () + 1, c.getY (), path);
-					Coordination coor = new Coordination (c.getX () + 1, c.getY ());
-					pathFound = setPathArray(coor, path);
-				}
-			}
-		}
 
 		//find path at left
 		if(!pathFound && c.getY() - 1 >= 0){
@@ -211,16 +171,6 @@ public class redEdgeRespond : MonoBehaviour {
 		}
 
 		//find path at right
-		if(!pathFound && c.getY() + 1 <= (multi_init.totalLength)){
-			if(visitRow[c.getX(), c.getY()] == true){
-				Vector3 pos = redNodeArray[c.getX(), c.getY()+1].GetComponent<RectTransform>().anchoredPosition3D;
-				if (!path.Contains (new Vector3 (pos.x, pos.y + 19.5f, pos.z))) {
-					addPath (c.getX (), c.getY () + 1, path);
-					Coordination coor = new Coordination (c.getX (), c.getY ()+1);
-					pathFound = setPathArray(coor, path);
-				}
-			}
-		}
 
 		if (!pathFound) {
 			Vector3 pos = redNodeArray[c.getX(), c.getY()].GetComponent<RectTransform>().anchoredPosition3D;
@@ -235,48 +185,6 @@ public class redEdgeRespond : MonoBehaviour {
 	private bool findNextEdge(int edgeRow, int edgeCol, int colReached, ArrayList foundRow){
 		bool found = false;
 		Coordination cord;
-
-		if (colReached == multi_init.totalLength) //reached
-			found = true;
-		else {
-				//check straigh next horizontal edge
-				cord = new Coordination(edgeRow, edgeCol+1);
-			if (edgeCol+1 <= multi_init.maxCol && visitRow[edgeRow,edgeCol+1] == true && !visit (cord,foundRow)){
-					foundRow.Add(cord);
-					found = findNextEdge(edgeRow,edgeCol+1,colReached+1,foundRow);
-					if(!found)//delete the new element added in arraylist
-						foundRow.RemoveAt(foundRow.Count-1);
-				}
-
-				//check downward vertical edge
-				if (!found && edgeCol+1 <= multi_init.maxCol && edgeRow!=4 && visitCol[edgeRow,edgeCol+1] == true){
-					found = findNextHorizontalEdge(edgeRow,edgeCol+1,colReached,foundRow);
-				}
-				
-				//check backward downward
-				if(!found && edgeRow!=4 && visitCol[edgeRow,edgeCol] == true){
-					found = findNextHorizontalEdge(edgeRow,edgeCol,colReached-1,foundRow);
-				}
-				
-				//check upward vertical edge
-				if (!found && edgeRow !=0 && edgeCol+1 <= multi_init.maxCol && visitCol[edgeRow-1,edgeCol+1] == true){
-					found = findNextHorizontalEdge(edgeRow-1,edgeCol+1,colReached,foundRow);
-				}
-
-				//check backward upward
-				if(!found && edgeRow != 0 && visitCol[edgeRow-1,edgeCol] == true)
-					found = findNextHorizontalEdge(edgeRow-1,edgeCol,colReached-1,foundRow);
-
-				if (!found && edgeCol-1 >= 0){//check backward row
-					cord = new Coordination(edgeRow,edgeCol-1);
-					if (visitRow[edgeRow,edgeCol-1] == true && !visit(cord,foundRow)){
-						foundRow.Add(cord);
-						found = findNextEdge(edgeRow,edgeCol-1,colReached-1,foundRow);
-						if(!found)
-							foundRow.RemoveAt(foundRow.Count-1);
-					}
-				}
-			}
 		return found;
 	}
 

@@ -5,6 +5,8 @@ using System.Collections;
 public class levelModifier : MonoBehaviour {
 
 	public void callToLevel(int lv){
+		aiMode_init.reset ();
+		aiMode_init.setLevel (lv);
 		switch (lv) {
 		case 1:
 			setBoardSize (0);
@@ -34,33 +36,33 @@ public class levelModifier : MonoBehaviour {
 			break;
 		case 7:
 			setBoardSize (1);
-			setLimitMoves (15);
+			setLimitMoves (13);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 8:
 			setBoardSize (1);
-			setLimitMoves (15);
+			setLimitMoves (13);
 			buttonHandler.setAiFirst (false);
 			break;
 		case 9:
 			setBoardSize (1);
-			setLimitBridge (17);
+			setLimitBridge (15);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 10:
 			setBoardSize (1);
-			setLimitBridge (17);
+			setLimitBridge (15);
 			buttonHandler.setAiFirst (false);
 			break;
 		case 11:
 			setBoardSize (1);
-			setLimitBridge (17);
+			setLimitBridge (15);
 			setLimitMoves (20);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 12:
 			setBoardSize (1);
-			setLimitBridge (17);
+			setLimitBridge (15);
 			setLimitMoves (20);
 			buttonHandler.setAiFirst (false);
 			break;
@@ -165,8 +167,16 @@ public class levelModifier : MonoBehaviour {
 
 	public void goToNextLevel(){
 		int tmp_level = aiMode_init.level+1;
-		aiMode_init.reset ();
-		aiMode_init.setLevel (tmp_level);
+		//aiMode_init.reset ();
+		//aiMode_init.setLevel (tmp_level);
+		Application.LoadLevel ("scene_ai");
+		callToLevel (tmp_level);
+	}
+
+	public void replayLevel(){
+		int tmp_level = aiMode_init.level;
+		//aiMode_init.reset ();
+		//aiMode_init.setLevel (tmp_level);
 		Application.LoadLevel ("scene_ai");
 		callToLevel (tmp_level);
 	}

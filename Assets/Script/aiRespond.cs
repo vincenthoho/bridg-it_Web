@@ -146,7 +146,7 @@ public class aiRespond : MonoBehaviour {
 
 	public static void blockLastBlue(){
 		Debug.Log ("<color=red>enter blockLastBlue</color>");
-		LastMove temp = new LastMove (0, 0, null);
+		LastMove temp = new LastMove (0, 0, "Row");
 		if(allBlueMoves.Count > 0)
 			temp = (LastMove)allBlueMoves [allBlueMoves.Count - 1];
 		bool blocked = true;

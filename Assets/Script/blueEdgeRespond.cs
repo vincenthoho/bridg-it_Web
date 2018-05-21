@@ -29,6 +29,7 @@ public class blueEdgeRespond : MonoBehaviour {
 	private static bool checkWin = false;
 
 	public GameObject ch;
+	public GameObject warningText;
 	public AudioClip pressSE;
 	
 	// Use this for initialization
@@ -110,6 +111,9 @@ public class blueEdgeRespond : MonoBehaviour {
 	
 	public void OnMouseDownEvent(){
 		Debug.Log (row + " " + col + " clicked blue");
+		if (myTurn && aiMode_init.blueBridges == 0 && (this.GetComponent<Image> ().color.a == 0))
+			StartCoroutine (showWarning ());
+
 		if (myTurn && aiMode_init.blueBridges > 0 && (this.GetComponent<Image> ().color.a == 0)) {//add one more condition , if is not blocked
 			AudioSource.PlayClipAtPoint (pressSE, Camera.main.transform.position);
 			if (this.role == "Row") {
@@ -117,14 +121,8 @@ public class blueEdgeRespond : MonoBehaviour {
 					visitRow [row, col] = true;	//as a visit
 					stepCount++;
 					if (aiMode_init.limitMoves) {
-						if (moveCount > aiMode_init.maxMoves) {
-							character.setEnd ();
-							Camera.main.SendMessage ("endgame", "blue");
-							return;
-						}else {
-							moveCount++;
-							aiMode_init.updateMoves ();
-						}
+						moveCount++;
+						aiMode_init.updateMoves ();
 					}
 					changeAlpha (255, this.transform);//display edge
 					int size = aiMode_init.maxCol;
@@ -148,7 +146,6 @@ public class blueEdgeRespond : MonoBehaviour {
 					//Switch turn according to the mode -> switch to AI or Another Player
 					if (SceneManager.GetActiveScene ().name == "scene_multi") {
 						myTurn = false;
-						multi_init.switchTurn ("ai");
 						if(!win())
 							redEdgeRespond.raiseTurn ();
 					}else if(SceneManager.GetActiveScene ().name == "scene_ai")						
@@ -163,14 +160,8 @@ public class blueEdgeRespond : MonoBehaviour {
 					visitCol [row, col] = true;	//as a visit
 					stepCount++;
 					if (aiMode_init.limitMoves) {
-						if (moveCount > aiMode_init.maxMoves) {
-							character.setEnd ();
-							Camera.main.SendMessage ("endgame", "blue");
-							return;
-						}else {
-							moveCount++;
-							aiMode_init.updateMoves ();
-						}
+						moveCount++;
+						aiMode_init.updateMoves ();
 					}
 					changeAlpha (255, this.transform);
 					Debug.Log ("set resistance at " + (row*aiMode_init.maxCol+col));
@@ -190,7 +181,6 @@ public class blueEdgeRespond : MonoBehaviour {
 					//stop my turn
 					if (SceneManager.GetActiveScene ().name == "scene_multi") {
 						myTurn = false;
-						multi_init.switchTurn ("ai");
 						if(!win())
 							redEdgeRespond.raiseTurn ();
 					}else if(SceneManager.GetActiveScene ().name == "scene_ai")						
@@ -224,6 +214,12 @@ public class blueEdgeRespond : MonoBehaviour {
 			blueMoves.Add (e);
 			aiMode_init.removeBlueBridge ();
 		}
+	}
+
+	private IEnumerator showWarning(){
+		warningText.SetActive (true);
+		yield return new WaitForSeconds (1);
+		warningText.SetActive (false);
 	}
 
 	private IEnumerator changeToAI(int row, int col, string type){
@@ -415,10 +411,7 @@ public class blueEdgeRespond : MonoBehaviour {
 		bool won = false;
 		ArrayList foundRowList;
 		int length = 0;
-		if (SceneManager.GetActiveScene ().name == "scene_multi") {
-			length = multi_init.totalLength;
-		} else if (SceneManager.GetActiveScene ().name == "scene_ai")
-			length = aiMode_init.totalLength;
+		length = aiMode_init.totalLength;
 		
 		if (stepCount >= length) {
 			//find start edge
@@ -787,14 +780,8 @@ public class blueEdgeRespond : MonoBehaviour {
 		bool found = false;
 		Coordination cord;
 
-		int length = 0, maxCol = 0;
-		if (SceneManager.GetActiveScene ().name == "scene_multi") {
-			length = multi_init.totalLength;
-			maxCol = multi_init.maxCol;
-		} else if (SceneManager.GetActiveScene ().name == "scene_ai") {
-			length = aiMode_init.totalLength;
-			maxCol = aiMode_init.maxCol;
-		}
+		int length = aiMode_init.totalLength;
+		int maxCol = aiMode_init.maxCol;
 
 		if (rowReached == length) //reached
 			found = true;

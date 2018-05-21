@@ -23,11 +23,6 @@ public class buttonHandler : MonoBehaviour {
 		aiMode_init.aiFirst = menu_init.aiFirst;
 	}
 
-	public void goToLevel_multi(int level){
-		Application.LoadLevel ("scene_multi");
-		multi_init.level = level;
-	}
-
 	public void openPanel(GameObject panel){
 		panel.SetActive (true);
 		timer.setTimer (false);
