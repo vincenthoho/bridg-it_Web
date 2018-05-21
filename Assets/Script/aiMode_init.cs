@@ -118,6 +118,7 @@ public class aiMode_init : MonoBehaviour {
 			moveText.GetComponent<Text> ().text = maxMoves.ToString();
 		else {
 			moveTopic.SetActive (false);
+			moveText.SetActive (false);
 		}
 
 		int i,j;
@@ -308,7 +309,14 @@ public class aiMode_init : MonoBehaviour {
 	}
 
 	public static void updateMoves(){
-		moveText.GetComponent<Text>().text = (maxMoves - blueEdgeRespond.moveCount).ToString();
+		if((maxMoves - blueEdgeRespond.moveCount) >= 0)
+			moveText.GetComponent<Text>().text = (maxMoves - blueEdgeRespond.moveCount).ToString();
+		else
+			moveText.GetComponent<Text>().text = "0";
+	}
+
+	public static void setLevel(int lv){
+		level = lv; 
 	}
 
 	//set board size -> 5x4 as 0, 6x5 as 1
@@ -445,7 +453,7 @@ public class aiMode_init : MonoBehaviour {
 			if (winner.Equals ("blue")) {
 				AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
 				blueWinText.SetActive (true);
-				if (limitMoves && blueEdgeRespond.moveCount++ > maxMoves) {
+				if (limitMoves && blueEdgeRespond.moveCount > maxMoves) {
 					blueWinText.SetActive (false);
 					TooManyMovesText.SetActive (true);
 					replayButton.SetActive (true);
@@ -468,16 +476,18 @@ public class aiMode_init : MonoBehaviour {
 				spentTimeText.SetActive (false);
 				scoreText.SetActive (false);
 				replayButton.SetActive (true);
+				nextButton.SetActive (false);
 			}
 		}
 	}
 
-	public void reset(){
+	public static void reset(){
 		nodeNo = 0;
 		limitBridges = false;
 		limitMoves = false;
 		mustConnect = false;
 		blinking = false;
+		blinkingText = false;
 		level = 1;
 		score = 0;
 		retries = 3;

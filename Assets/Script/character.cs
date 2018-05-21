@@ -36,6 +36,9 @@ public class character : MonoBehaviour {
 		}
 	}
 
+	public static void setEnd(){
+		endMove = true;
+	}
 	public static void setBlueNodeArray(Transform[,] array){
 		blueNodeArray = array;
 	}

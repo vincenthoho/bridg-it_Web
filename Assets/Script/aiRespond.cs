@@ -146,7 +146,7 @@ public class aiRespond : MonoBehaviour {
 
 	public static void blockLastBlue(){
 		Debug.Log ("<color=red>enter blockLastBlue</color>");
-		LastMove temp = (LastMove)allBlueMoves [0];
+		LastMove temp = new LastMove (0, 0, null);
 		if(allBlueMoves.Count > 0)
 			temp = (LastMove)allBlueMoves [allBlueMoves.Count - 1];
 		bool blocked = true;
@@ -288,12 +288,33 @@ public class aiRespond : MonoBehaviour {
 		//If player checkmates, block player first
 		if (blueEdgeRespond.checkmate) {
 			Debug.Log ("<color=white>checkmate</color>");
+			/*
+			int cmX = blueEdgeRespond.cmX;
+			int cmY = blueEdgeRespond.cmY;
+			if (blueEdgeRespond.checkmateCol)
+				placeColEdge (cmX - 1, cmY + 1);
+			else
+				placeRowEdge (cmX, cmY);
+			*/
 			int cmX = blueEdgeRespond.getCheckmateX ();
 			int cmY = blueEdgeRespond.getCheckmateY ();
+			if (blueEdgeRespond.checkmateCol) {
+				if (blueEdgeRespond.skipLeft)
+					placeColEdge (cmX - 1, cmY + 1);
+				else
+					placeColEdge (cmX - 1, cmY);
+			} else {
+				if (blueEdgeRespond.skipUp)
+					placeRowEdge (cmX, cmY);
+				else
+					placeRowEdge (cmX - 1, cmY);
+			}
+			/*
 			if (cmX == 1) {
 				placeRowEdge (0, cmY);
 			}else
 				placeRowEdge (aiMode_init.maxRow, cmY);
+				*/
 			
 			return;
 		}

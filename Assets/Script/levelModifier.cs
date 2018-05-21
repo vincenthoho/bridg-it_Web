@@ -16,12 +16,12 @@ public class levelModifier : MonoBehaviour {
 			break;
 		case 3:
 			setBoardSize (0);
-			setLimitMoves (10);
+			setLimitMoves (7);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 4:
 			setBoardSize (0);
-			setLimitMoves (10);
+			setLimitMoves (7);
 			buttonHandler.setAiFirst (false);
 			break;
 		case 5:
@@ -164,9 +164,11 @@ public class levelModifier : MonoBehaviour {
 	}
 
 	public void goToNextLevel(){
+		int tmp_level = aiMode_init.level+1;
+		aiMode_init.reset ();
+		aiMode_init.setLevel (tmp_level);
 		Application.LoadLevel ("scene_ai");
-		aiMode_init.level++;
-		callToLevel (aiMode_init.level);
+		callToLevel (tmp_level);
 	}
 
 	public void setLimitMoves(int move){
