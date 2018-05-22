@@ -472,6 +472,11 @@ public class aiMode_init : MonoBehaviour {
 	}
 
 	public void endgame(string winner){
+		if (winner.Equals ("blue")) {
+			if (playerData.Singleton.clearedLevel <= level + 1)
+				playerData.Singleton.UpdateValues (level + 1);
+		}
+
 		if (character.endMove || enemy.endMove) {
 			UIpanel.SetActive (true);
 		
@@ -493,8 +498,6 @@ public class aiMode_init : MonoBehaviour {
 				scoreText.SetActive (true);
 				spentTimeText.GetComponent<Text> ().text = "Time used: " + timer.getTime() + " seconds";
 				setScore ();
-				if(playerData.Singleton.clearedLevel <= level+1)
-					playerData.Singleton.UpdateValues (level+1);
 			} else if (winner.Equals ("red")) {
 				AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
 				redWinText.SetActive (true);
