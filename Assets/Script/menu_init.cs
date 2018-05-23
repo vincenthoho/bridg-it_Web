@@ -27,7 +27,14 @@ public class menu_init : MonoBehaviour {
 	}
 
 	private void loadLevelButtons(){
-		int currentLevels = playerData.Singleton.clearedLevel;
+		//int currentLevels = playerData.Singleton.clearedLevel;
+		int currentLevels = 1;
+		if (PlayerPrefs.HasKey ("clearedLevel"))
+			currentLevels = PlayerPrefs.GetInt ("clearedLevel");
+		else {
+			PlayerPrefs.SetInt ("clearedLevel", 1);
+			PlayerPrefs.Save ();
+		}
 
 		for (int i = 0; i < levelButtons.Length; i++) {
 			if (i < currentLevels) {

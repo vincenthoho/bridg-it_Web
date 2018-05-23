@@ -446,8 +446,32 @@ public class aiMode_init : MonoBehaviour {
 		instructionButton.GetComponent<Button> ().interactable = false;
 	}
 
-	public void setScore(){
-		int baseScore = 0;
+	public int setScore(){
+		int baseTimeScore = 100;
+		int baseMoveScore = 30;
+
+		float deductScoreByTime = 0.5f;
+		float deductScoreByMove = 0.5f;
+
+		int timeScore = (int)(baseTimeScore - (timer.getTime () * deductScoreByTime));
+		Debug.Log ("<color=red> Time Score:" + timeScore + "</color>");
+
+		int moveScore = (int)(baseMoveScore - (blueEdgeRespond.stepCount - totalLength) * deductScoreByMove);
+		Debug.Log ("<color=red> Move Score:" + moveScore + "</color>");
+
+		Debug.Log ("<color=red>Collected " + blueEdgeRespond.collectedBonusNode + " bonus nodes</color>");
+		int bonusScore = 20 * (blueEdgeRespond.collectedBonusNode / 2);
+
+		int retryScore = retries * 10;
+		Debug.Log ("<color=red>Retry Score:" + retryScore + "</color>");
+
+		int score = timeScore + moveScore + bonusScore + retryScore;
+		if (score < 0)
+			score = 0;
+
+		return score;
+
+		/*
 		if (limitMoves) {
 			if (timer.getTime () <= 30)
 				baseScore = 1000 + 100 * maxMoves;
@@ -463,18 +487,23 @@ public class aiMode_init : MonoBehaviour {
 			else
 				baseScore = 100;
 		}
-		
-		Debug.Log ("<color=red>Collected " + blueEdgeRespond.collectedBonusNode + " bonus nodes</color>");
-		score = baseScore - 100*(blueEdgeRespond.stepCount-totalLength) + 200*(blueEdgeRespond.collectedBonusNode/2);
-		if (score < 0)
-			score = 0;
-		scoreText.GetComponent<Text> ().text = "Score: " + score;
+		*/
+		//score = baseScore - 100*(blueEdgeRespond.stepCount-totalLength) + 200*(blueEdgeRespond.collectedBonusNode/2);
 	}
 
 	public void endgame(string winner){
 		if (winner.Equals ("blue")) {
-			if (playerData.Singleton.clearedLevel <= level + 1)
-				playerData.Singleton.UpdateValues (level + 1);
+			int s = PlayerPrefs.GetInt ("score");
+
+			//update cleared level and score when playing new level
+			if (level == PlayerPrefs.GetInt("clearedLevel")) {
+				s += setScore ();
+				PlayerPrefs.SetInt ("score", s);
+				PlayerPrefs.SetInt ("clearedLevel", level + 1);
+				PlayerPrefs.Save ();
+			}
+
+			scoreText.GetComponent<Text> ().text = "Score: " + s;
 		}
 
 		if (character.endMove || enemy.endMove) {
@@ -497,7 +526,6 @@ public class aiMode_init : MonoBehaviour {
 				spentTimeText.SetActive (true);
 				scoreText.SetActive (true);
 				spentTimeText.GetComponent<Text> ().text = "Time used: " + timer.getTime() + " seconds";
-				setScore ();
 			} else if (winner.Equals ("red")) {
 				AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
 				redWinText.SetActive (true);

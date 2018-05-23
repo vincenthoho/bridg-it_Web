@@ -667,14 +667,57 @@ public class blueEdgeRespond : MonoBehaviour {
 		if (!pathFound && c.getX () - 1 >= 0) {
 			Coordination coor = new Coordination (c.getX () - 1, c.getY ());
 			if (visitCol [c.getX () - 1, c.getY ()] == true) { 
-				if (!checkCoorEqual(path, coor.getX(), coor.getY()) && targetCoor != coor) {
+				if (!checkCoorEqual(path, coor.getX(), coor.getY()) && targetCoor.Equals(coor) == false) {
 					Debug.Log ("<color=orange>Check Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
 					path.Add (coor);
 					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
 				}
-			} else {
-				if (!skipped && !checkCoorEqual(path, coor.getX(), coor.getY()) && !blockedCol[c.getX()-1, c.getY()] && targetCoor != coor) {
-					Debug.Log ("<color=orange>Skip to Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
+			}
+		}
+
+		//find path downward
+		if (!pathFound && c.getX () + 1 <= (length)) {
+			Coordination coor = new Coordination (c.getX () + 1, c.getY ());
+			if (visitCol [c.getX (), c.getY ()] == true) {
+				if (!checkCoorEqual(path, coor.getX(), coor.getY()) && targetCoor.Equals(coor) == false) {
+					Debug.Log ("<color=orange>Check Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
+					path.Add (coor);
+					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
+				}
+			}
+		}
+
+		Debug.Log (pathFound);
+		//find path at left
+		if(pathFound == false && c.getY() - 1 >= 0){
+			Coordination coor = new Coordination (c.getX (), c.getY ()-1);
+			if(visitRow[c.getX(), c.getY()-1] == true){
+				if (!checkCoorEqual(path, coor.getX(), coor.getY()) && targetCoor.Equals(coor) == false) {
+					Debug.Log ("<color=orange>Check Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
+					path.Add (coor);
+					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
+				}
+			}
+		}
+
+		//find path at right
+		if(!pathFound && c.getY() + 1 <= (length-1)){
+			Coordination coor = new Coordination (c.getX (), c.getY ()+1);
+			if(visitRow[c.getX(), c.getY()] == true){
+				if (!checkCoorEqual(path, coor.getX(), coor.getY()) && targetCoor.Equals(coor) == false) {
+					Debug.Log ("<color=orange>Check Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
+					path.Add (coor);
+					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
+				}
+			}
+		}
+
+		//Skip upward
+		if (!pathFound && c.getX () - 1 >= 0) {
+			Coordination coor = new Coordination (c.getX () - 1, c.getY ());
+			if (visitCol [c.getX () - 1, c.getY ()] != true) { 
+				if (!skipped && !checkCoorEqual (path, coor.getX (), coor.getY ()) && !blockedCol [c.getX () - 1, c.getY ()] && targetCoor.Equals(coor) == false) {
+					Debug.Log ("<color=orange>Skip to Coor: x," + coor.getX () + ", " + coor.getY () + "</color>");
 					skipped = true;
 					checkmateCol = false;
 					skipLeft = false;
@@ -687,17 +730,11 @@ public class blueEdgeRespond : MonoBehaviour {
 			}
 		}
 
-		//find path downward
+		//Skip downward
 		if (!pathFound && c.getX () + 1 <= (length)) {
 			Coordination coor = new Coordination (c.getX () + 1, c.getY ());
-			if (visitCol [c.getX (), c.getY ()] == true) {
-				if (!checkCoorEqual(path, coor.getX(), coor.getY()) && targetCoor != coor) {
-					Debug.Log ("<color=orange>Check Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
-					path.Add (coor);
-					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
-				}
-			} else {
-				if (!skipped && !checkCoorEqual(path, coor.getX(), coor.getY()) && !blockedCol[c.getX(), c.getY()]  && targetCoor != coor) {
+			if (visitCol [c.getX (), c.getY ()] != true) {
+				if (!skipped && !checkCoorEqual(path, coor.getX(), coor.getY()) && !blockedCol[c.getX(), c.getY()]  && targetCoor.Equals(coor) == false) {
 					Debug.Log ("<color=orange>Skip to Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
 					skipped = true;
 					checkmateCol = false;
@@ -711,18 +748,11 @@ public class blueEdgeRespond : MonoBehaviour {
 			}
 		}
 
-		Debug.Log (pathFound);
-		//find path at left
+		//Skip left
 		if(pathFound == false && c.getY() - 1 >= 0){
 			Coordination coor = new Coordination (c.getX (), c.getY ()-1);
-			if(visitRow[c.getX(), c.getY()-1] == true){
-				if (!checkCoorEqual(path, coor.getX(), coor.getY()) && targetCoor != coor) {
-					Debug.Log ("<color=orange>Check Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
-					path.Add (coor);
-					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
-				}
-			} else {
-				if (!skipped && !checkCoorEqual(path, coor.getX(), coor.getY()) && !blockedRow[c.getX(), c.getY()-1] && targetCoor != coor) {
+			if(visitRow[c.getX(), c.getY()-1] != true){
+				if (!skipped && !checkCoorEqual(path, coor.getX(), coor.getY()) && !blockedRow[c.getX(), c.getY()-1] && targetCoor.Equals(coor) == false) {
 					Debug.Log (pathFound);
 					Debug.Log ("<color=orange>Skip to Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
 					skipped = true;
@@ -737,17 +767,11 @@ public class blueEdgeRespond : MonoBehaviour {
 			}
 		}
 
-		//find path at right
+		//Skip right
 		if(!pathFound && c.getY() + 1 <= (length-1)){
 			Coordination coor = new Coordination (c.getX (), c.getY ()+1);
-			if(visitRow[c.getX(), c.getY()] == true){
-				if (!checkCoorEqual(path, coor.getX(), coor.getY()) && targetCoor != coor) {
-					Debug.Log ("<color=orange>Check Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
-					path.Add (coor);
-					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
-				}
-			} else {
-				if (!skipped && !checkCoorEqual(path, coor.getX(), coor.getY()) && !blockedRow[c.getX(), c.getY()]  && targetCoor != coor) {
+			if(visitRow[c.getX(), c.getY()] != true){
+				if (!skipped && !checkCoorEqual(path, coor.getX(), coor.getY()) && !blockedRow[c.getX(), c.getY()]  && targetCoor.Equals(coor) == false) {
 					Debug.Log ("<color=orange>Skip to Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
 					skipped = true;
 					checkmateCol = true;

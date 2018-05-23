@@ -288,14 +288,6 @@ public class aiRespond : MonoBehaviour {
 		//If player checkmates, block player first
 		if (blueEdgeRespond.checkmate) {
 			Debug.Log ("<color=white>checkmate</color>");
-			/*
-			int cmX = blueEdgeRespond.cmX;
-			int cmY = blueEdgeRespond.cmY;
-			if (blueEdgeRespond.checkmateCol)
-				placeColEdge (cmX - 1, cmY + 1);
-			else
-				placeRowEdge (cmX, cmY);
-			*/
 			int cmX = blueEdgeRespond.getCheckmateX ();
 			int cmY = blueEdgeRespond.getCheckmateY ();
 			if (blueEdgeRespond.checkmateCol) {
@@ -308,14 +300,7 @@ public class aiRespond : MonoBehaviour {
 					placeRowEdge (cmX, cmY);
 				else
 					placeRowEdge (cmX - 1, cmY);
-			}
-			/*
-			if (cmX == 1) {
-				placeRowEdge (0, cmY);
-			}else
-				placeRowEdge (aiMode_init.maxRow, cmY);
-				*/
-			
+			}			
 			return;
 		}
 
@@ -323,9 +308,6 @@ public class aiRespond : MonoBehaviour {
 		if (maxI < size * size) {
 			int i = maxI / size;
 			int j = maxI % size;
-			//if (visitRow [i, j] == true || blockedRow [i, j] == true) 
-			//	blockLastBlue ();
-			//else
 			if ((i == 0 && j == 0) || (visitRow [i, j] == true || blockedRow [i, j] == true))
 				blockLastBlue ();
 			else
