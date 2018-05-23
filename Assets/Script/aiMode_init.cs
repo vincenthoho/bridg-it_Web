@@ -13,6 +13,7 @@ public class aiMode_init : MonoBehaviour {
 	public GameObject endGameCanvas;
 	public GameObject blueWinText;
 	public GameObject TooManyMovesText;
+	public GameObject finishText;
 	public GameObject redWinText;
 	public GameObject spentTimeText;
 	public GameObject scoreText;
@@ -498,7 +499,9 @@ public class aiMode_init : MonoBehaviour {
 		//score = baseScore - 100*(blueEdgeRespond.stepCount-totalLength) + 200*(blueEdgeRespond.collectedBonusNode/2);
 	}
 
-	public void endgame(string winner){
+	//Updating the player's score and new level to the scoreboard
+	public void updateScore(string winner){
+		Debug.Log ("<color=green>Update Score</color>");
 		if (winner.Equals ("blue")) {
 			int s = PlayerPrefs.GetInt ("score");
 
@@ -509,27 +512,36 @@ public class aiMode_init : MonoBehaviour {
 				PlayerPrefs.SetInt ("clearedLevel", level + 1);
 				PlayerPrefs.Save ();
 			}
-
-			StartCoroutine (csAPIController.Post (maxMoves-blueEdgeRespond.stepCount, PlayerPrefs.GetInt("clearedLevel"),timer.getTime (), 3 - retries, maxMoves, ""));
+			Debug.Log ("<color=green>Update:" + (maxMoves-blueEdgeRespond.stepCount) +", "+ (PlayerPrefs.GetInt("clearedLevel")-1) +", "+ (timer.getTime()) +", "+ (3-retries) +","+ maxMoves +"</color>");
+			StartCoroutine (csAPIController.Post (maxMoves-blueEdgeRespond.stepCount, PlayerPrefs.GetInt("clearedLevel")-1, timer.getTime (), 3 - retries, maxMoves, ""));
 			scoreText.GetComponent<Text> ().text = "Score: " + s;
 		}
+	}
 
-		if (character.endMove || enemy.endMove) {
+	public void endgame(string winner){
+		//if (character.endMove || enemy.endMove) {
 			UIpanel.SetActive (true);
 		
 			if (winner.Equals ("blue")) {
-				if (limitMoves && blueEdgeRespond.moveCount > maxMoves) {
-					AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
+				if (level == 28) {
 					blueWinText.SetActive (false);
-					TooManyMovesText.SetActive (true);
-					replayButton.SetActive (true);
 					nextButton.SetActive (false);
+					replayButton.SetActive (true);
+					finishText.SetActive (true);
 				} else {
-					AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
-					blueWinText.SetActive (true);
-					TooManyMovesText.SetActive (false);
-					replayButton.SetActive (false);
-					nextButton.SetActive (true);
+					if (limitMoves && blueEdgeRespond.moveCount > maxMoves) {
+						AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
+						blueWinText.SetActive (false);
+						TooManyMovesText.SetActive (true);
+						replayButton.SetActive (true);
+						nextButton.SetActive (false);
+					} else {
+						AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
+						blueWinText.SetActive (true);
+						TooManyMovesText.SetActive (false);
+						replayButton.SetActive (false);
+						nextButton.SetActive (true);
+					}
 				}
 				spentTimeText.SetActive (true);
 				scoreText.SetActive (true);
@@ -542,7 +554,7 @@ public class aiMode_init : MonoBehaviour {
 				replayButton.SetActive (true);
 				nextButton.SetActive (false);
 			}
-		}
+		//}
 	}
 
 	public static void reset(){

@@ -33,6 +33,18 @@ public class buttonHandler : MonoBehaviour {
 		timer.setTimer (true);
 	}
 
+	public void hidePanel(GameObject panel){
+		panel.SetActive (false);
+	}
+
+	public void hideButton(GameObject btn){
+		btn.SetActive (false);
+	}
+
+	public void switchButton(GameObject anotherButton){
+		anotherButton.SetActive (true);
+	}
+
 	public void pageForward(GameObject panel){
 		if (page+1 < instructionPage.Length)
 			page++;

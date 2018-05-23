@@ -140,7 +140,8 @@ public class aiRespond : MonoBehaviour {
 	}
 
 	void Update(){
-		if (checkWin && enemy.endMove) {
+		if (checkWin) {
+		//if (checkWin && enemy.endMove) {
 			timer.setTimer (false);
 			Camera.main.SendMessage ("endgame", "red");
 			checkWin = false;
@@ -723,7 +724,7 @@ public class aiRespond : MonoBehaviour {
 						setPathArray (c, aiMode_init.totalLength, path);
 
 						//ArrayList path = setPathArray (foundRowList);
-						enemy.winAnimation (path);
+						//enemy.winAnimation (path);
 						break;
 					}
 				}

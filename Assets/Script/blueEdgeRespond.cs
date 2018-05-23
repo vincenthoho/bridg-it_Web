@@ -348,7 +348,8 @@ public class blueEdgeRespond : MonoBehaviour {
 	}
 
 	void Update(){
-		if (checkWin && character.endMove) {
+		if (checkWin) {
+		//if (checkWin && character.endMove) {
 			timer.setTimer (false);
 			Camera.main.SendMessage ("endgame", "blue");
 			checkWin = false;
@@ -424,6 +425,7 @@ public class blueEdgeRespond : MonoBehaviour {
 					if (won) {
 						//StartCoroutine(winAnimation (foundRowList));
 						//ch.SetActive(true);
+						Camera.main.SendMessage("updateScore","blue");
 						Camera.main.SendMessage("disableButtons");
 
 						ArrayList path = new ArrayList ();
@@ -435,7 +437,7 @@ public class blueEdgeRespond : MonoBehaviour {
 						Coordination c = new Coordination (coor.getX () + 1, coor.getY ());
 						setPathArray (c, path, length, length, false);
 						checkConnectBonusNode (path);
-						character.winAnimation(path);
+						//character.winAnimation(path);
 						break;
 					}
 				}
