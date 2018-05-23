@@ -218,7 +218,7 @@ public class blueEdgeRespond : MonoBehaviour {
 
 	private IEnumerator showWarning(){
 		warningText.SetActive (true);
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (1.5f);
 		warningText.SetActive (false);
 	}
 

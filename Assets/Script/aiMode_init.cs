@@ -110,18 +110,25 @@ public class aiMode_init : MonoBehaviour {
 		levelText.GetComponent<Text>().text = level.ToString();
 		checkRedoButton ();
 
-		if (limitBridges)
+		if (limitBridges) {
+			bridgeTopic.SetActive (true);
 			bridgeText.GetComponent<Text> ().text = blueBridges.ToString ();
-		else {
+		}else {
 			bridgeTopic.SetActive (false);
 			bridgeText.SetActive (false);
 		}
 
-		if (limitMoves)
-			moveText.GetComponent<Text> ().text = maxMoves.ToString();
-		else {
+		if (limitMoves) {
+			moveTopic.SetActive (true);
+			moveText.GetComponent<Text> ().text = maxMoves.ToString ();
+		}else {
 			moveTopic.SetActive (false);
 			moveText.SetActive (false);
+		}
+
+		if (limitMoves && limitBridges) {
+			moveTopic.SetActive (true);
+			bridgeTopic.SetActive (false);
 		}
 
 		int i,j;
@@ -503,6 +510,7 @@ public class aiMode_init : MonoBehaviour {
 				PlayerPrefs.Save ();
 			}
 
+			StartCoroutine (csAPIController.Post (maxMoves-blueEdgeRespond.stepCount, PlayerPrefs.GetInt("clearedLevel"),timer.getTime (), 3 - retries, maxMoves, ""));
 			scoreText.GetComponent<Text> ().text = "Score: " + s;
 		}
 

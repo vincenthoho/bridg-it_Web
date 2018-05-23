@@ -105,10 +105,9 @@ public class aiRespond : MonoBehaviour {
 		for (int i = 0; i <= (aiMode_init.totalLength-1); i++) {
 			for (int j = 0; j <= (aiMode_init.totalLength-1); j++) {
 				Debug.Log("<color=pink>check " + i + ", " + j + "</color>");
-				if (visitRow [i, j] == true)
+				if (visitRow [i, j] == true) {
 					count++;
-				if (blockedRow [i, j] == true)
-					count++;
+				}
 			}
 			if (count < 5 && count < min){
 				min = count;
@@ -1014,6 +1013,10 @@ public class aiRespond : MonoBehaviour {
 		}
 		stepCount = 0;
 		checkWin = false;
+		checkmate = false;
+		checkmateCol = false;
+		skipLeft = false;
+		skipUp = false;
 		allMyMoves.Clear ();
 		allBlueMoves.Clear ();
 		shannon.reset ();

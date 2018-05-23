@@ -18,12 +18,12 @@ public class levelModifier : MonoBehaviour {
 			break;
 		case 3:
 			setBoardSize (0);
-			setLimitMoves (7);
+			setLimitMoves (11);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 4:
 			setBoardSize (0);
-			setLimitMoves (7);
+			setLimitMoves (11);
 			buttonHandler.setAiFirst (false);
 			break;
 		case 5:
