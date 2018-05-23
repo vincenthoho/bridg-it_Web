@@ -18,6 +18,10 @@ public class aiRespond : MonoBehaviour {
 	private static ArrayList allBlueMoves = new ArrayList();
 	public static ArrayList aiMoves = new ArrayList();
 	private static bool checkWin = false;
+	public static bool checkmate = false;
+	public static bool checkmateCol = false;
+	public static bool skipLeft = false;
+	public static bool skipUp = false;
 
 	void Awake () {
 		stepCount = 0;
@@ -281,9 +285,225 @@ public class aiRespond : MonoBehaviour {
 		}
 	}
 
+	private static bool checkCoorEqual(ArrayList p, int x, int y){
+		foreach (Coordination c in p) {
+			if (c.getX () == x && c.getY () == y)
+				return true;
+		}
+		return false;
+	}
+
+	//Check if AI almost win
+	//if True, block the user first before calculate with Shannon Heuristic
+	public static ArrayList checkCheckmate(){
+		ArrayList pathList = new ArrayList ();
+		checkmate = false;
+
+		if (stepCount >= aiMode_init.totalLength-1) {
+			//find start edge from left
+			for (int i = 0; i < aiMode_init.totalLength; i++){
+				if(visitRow[i, 0] ==  true){
+					Coordination cord = new Coordination(i, 0);
+					pathList.Add (cord);
+					checkmate = findCheckmatePath (cord, pathList, aiMode_init.totalLength, aiMode_init.totalLength, false, new Coordination(-1,-1));
+					if (checkmate)
+						return pathList;
+				}
+			}
+
+			//find start edge from right
+			for (int i = 0; i < aiMode_init.totalLength; i++){
+				if(visitRow[i, aiMode_init.maxRow] ==  true){
+					Coordination cord = new Coordination(i, aiMode_init.maxRow);
+					pathList.Add (cord);
+					checkmate = findCheckmatePath (cord, pathList, aiMode_init.totalLength, 0, false, new Coordination(-1, -1));
+					if (checkmate)
+						return pathList;
+				}
+			}
+		}
+		return pathList;
+	}
+
+	/*
+	*/
+
+	//find path almost connected
+	//c -> starting coordinate | path -> arraylist to record checked path | length -> board size | skipped -> check if skipped once already
+	private static bool findCheckmatePath(Coordination c, ArrayList path, int length, int end, bool skipped, Coordination targetCoor){
+		//is the path found
+		bool pathFound = false;
+		bool preSkipped = skipped;
+
+		//if path finding finished, return blank targetCoor
+		if (c.getY () == end) {
+			Debug.Log ("<color=red>Found end</color>");
+			path.Add (targetCoor);
+			return true;
+		}
+
+		//find path upward
+		if (!pathFound && c.getX () - 1 >= 0) {
+			Coordination coor = new Coordination (c.getX () - 1, c.getY ());
+			if (visitCol [c.getX () - 1, c.getY ()] == true) { 
+				if (!checkCoorEqual(path, coor.getX(), coor.getY()) && targetCoor.Equals(coor) == false) {
+					Debug.Log ("<color=orange>Check Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
+					path.Add (coor);
+					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
+				}
+			}
+		}
+
+		//find path downward
+		if (!pathFound && c.getX () + 1 < (length)) {
+			Coordination coor = new Coordination (c.getX () + 1, c.getY ());
+			if (visitCol [c.getX (), c.getY ()] == true) {
+				if (!checkCoorEqual(path, coor.getX(), coor.getY()) && targetCoor.Equals(coor) == false) {
+					Debug.Log ("<color=orange>Check Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
+					path.Add (coor);
+					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
+				}
+			}
+		}
+
+		Debug.Log (pathFound);
+		//find path at left
+		if(pathFound == false && c.getY() - 1 >= 0){
+			Coordination coor = new Coordination (c.getX (), c.getY ()-1);
+			if(visitRow[c.getX(), c.getY()-1] == true){
+				if (!checkCoorEqual(path, coor.getX(), coor.getY()) && targetCoor.Equals(coor) == false) {
+					Debug.Log ("<color=orange>Check Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
+					path.Add (coor);
+					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
+				}
+			}
+		}
+
+		//find path at right
+		if(!pathFound && c.getY() + 1 <= (length)){
+			Coordination coor = new Coordination (c.getX (), c.getY ()+1);
+			if(visitRow[c.getX(), c.getY()] == true){
+				if (!checkCoorEqual(path, coor.getX(), coor.getY()) && targetCoor.Equals(coor) == false) {
+					Debug.Log ("<color=orange>Check Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
+					path.Add (coor);
+					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
+				}
+			}
+		}
+
+		//Skip upward
+		if (!pathFound && c.getX () - 1 >= 0) {
+			Coordination coor = new Coordination (c.getX () - 1, c.getY ());
+			if (visitCol [c.getX () - 1, c.getY ()] != true) { 
+				if (!skipped && !checkCoorEqual (path, coor.getX (), coor.getY ()) && !blockedCol [c.getX () - 1, c.getY ()] && targetCoor.Equals(coor) == false) {
+					Debug.Log ("<color=orange>Skip to Coor: x," + coor.getX () + ", " + coor.getY () + "</color>");
+					skipped = true;
+					checkmateCol = false;
+					skipLeft = false;
+					skipUp = true;
+					targetCoor = coor;
+					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
+					if (!pathFound)
+						skipped = false;
+				}
+			}
+		}
+
+		//Skip downward
+		if (!pathFound && c.getX () + 1 < (length)) {
+			Coordination coor = new Coordination (c.getX () + 1, c.getY ());
+			if (visitCol [c.getX (), c.getY ()] != true) {
+				if (!skipped && !checkCoorEqual(path, coor.getX(), coor.getY()) && !blockedCol[c.getX(), c.getY()]  && targetCoor.Equals(coor) == false) {
+					Debug.Log ("<color=orange>Skip to Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
+					skipped = true;
+					checkmateCol = false;
+					skipLeft = false;
+					skipUp = false;
+					targetCoor = coor;
+					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
+					if (!pathFound)
+						skipped = false;
+				}
+			}
+		}
+
+		//Skip left
+		if(pathFound == false && c.getY() - 1 >= 0){
+			Coordination coor = new Coordination (c.getX (), c.getY ()-1);
+			if(visitRow[c.getX(), c.getY()-1] != true){
+				if (!skipped && !checkCoorEqual(path, coor.getX(), coor.getY()) && !blockedRow[c.getX(), c.getY()-1] && targetCoor.Equals(coor) == false) {
+					Debug.Log (pathFound);
+					Debug.Log ("<color=orange>Skip to Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
+					skipped = true;
+					checkmateCol = true;
+					skipLeft = true;
+					skipUp = false;
+					targetCoor = coor;
+					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
+					if (!pathFound)
+						skipped = false;
+				}
+			}
+		}
+
+		//Skip right
+		if(!pathFound && c.getY() + 1 <= (length)){
+			Coordination coor = new Coordination (c.getX (), c.getY ()+1);
+			if(visitRow[c.getX(), c.getY()] != true){
+				if (!skipped && !checkCoorEqual(path, coor.getX(), coor.getY()) && !blockedRow[c.getX(), c.getY()]  && targetCoor.Equals(coor) == false) {
+					Debug.Log ("<color=orange>Skip to Coor: x," + coor.getX() + ", " + coor.getY() + "</color>");
+					skipped = true;
+					checkmateCol = true;
+					skipLeft = false;
+					skipUp = false;
+					targetCoor = coor;
+					pathFound = findCheckmatePath (coor, path, length, end, skipped, targetCoor);
+					if (!pathFound)
+						skipped = false;
+				}
+			}
+		}
+
+		//if path not connected yet, return a null coordination
+		if (!pathFound) {
+			Debug.Log ("<color=red>Remove Coor: x," + c.getX () + ", " + c.getY () + "</color>");
+			//path.Remove (c);
+			//skipped = preSkipped;
+			skipped = false;
+			return false;
+		} else
+			return true;
+
+		skipped = false;
+		return false;
+	}
+
 	//check path with Shannon Heuristic
 	public static void checkPath(){
 		int size = aiMode_init.maxCol;
+
+		//If AI checkmates, connect it to win first
+		ArrayList checkmatePath = checkCheckmate ();
+		if (checkmate) {
+			Debug.Log ("<color=red>checkmate</color>");
+			Coordination c = new Coordination (0, 0);
+			if(checkmatePath.Count >= 1)
+				c = (Coordination)checkmatePath[checkmatePath.Count -1];
+			int cmX = c.getX();
+			int cmY = c.getY ();
+			if (checkmateCol) {
+				if (skipLeft)
+					placeRowEdge (cmX, cmY);
+				else
+					placeRowEdge (cmX, cmY - 1);
+			} else {
+				if (skipUp)
+					placeColEdge (cmX, cmY);
+				else
+					placeColEdge (cmX - 1, cmY);
+			}			
+			return;
+		}
 
 		//If player checkmates, block player first
 		if (blueEdgeRespond.checkmate) {
