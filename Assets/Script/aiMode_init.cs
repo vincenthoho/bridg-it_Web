@@ -541,7 +541,7 @@ public class aiMode_init : MonoBehaviour {
 					replayButton.SetActive (true);
 					nextButton.SetActive (false);
 					scoreText.SetActive (false);
-				} else if(mustConnect && blueEdgeRespond.collectedBonusNode == 0){
+				} else if(mustConnect && blueEdgeRespond.collectedBonusNode < 1){
 					AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
 					blueWinText.SetActive (false);
 					collectFailText.SetActive (true);

@@ -444,7 +444,7 @@ public class blueEdgeRespond : MonoBehaviour {
 						Camera.main.SendMessage("disableButtons");
 
 						ArrayList path = new ArrayList ();
-
+						/*
 						//set first path
 						Coordination coor = (Coordination)foundRowList[0];
 						addPath (coor.getX (), coor.getY (), path);
@@ -453,6 +453,7 @@ public class blueEdgeRespond : MonoBehaviour {
 						setPathArray (c, path, length, length, false);
 						checkConnectBonusNode (path);
 						//character.winAnimation(path);
+						*/
 						break;
 					}
 				}
