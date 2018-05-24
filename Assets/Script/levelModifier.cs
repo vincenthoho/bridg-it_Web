@@ -18,12 +18,12 @@ public class levelModifier : MonoBehaviour {
 			break;
 		case 3:
 			setBoardSize (0);
-			setLimitMoves (11);
+			setLimitMoves (9);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 4:
 			setBoardSize (0);
-			setLimitMoves (11);
+			setLimitMoves (9);
 			buttonHandler.setAiFirst (false);
 			break;
 		case 5:
@@ -36,56 +36,56 @@ public class levelModifier : MonoBehaviour {
 			break;
 		case 7:
 			setBoardSize (1);
-			setLimitMoves (13);
+			setLimitMoves (11);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 8:
 			setBoardSize (1);
-			setLimitMoves (13);
+			setLimitMoves (11);
 			buttonHandler.setAiFirst (false);
 			break;
 		case 9:
 			setBoardSize (1);
-			setLimitBridge (15);
+			setLimitBridge (13);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 10:
 			setBoardSize (1);
-			setLimitBridge (15);
+			setLimitBridge (13);
 			buttonHandler.setAiFirst (false);
 			break;
 		case 11:
 			setBoardSize (1);
-			setLimitBridge (15);
-			setLimitMoves (20);
+			setLimitBridge (13);
+			setLimitMoves (15);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 12:
 			setBoardSize (1);
-			setLimitBridge (15);
-			setLimitMoves (20);
+			setLimitBridge (13);
+			setLimitMoves (15);
 			buttonHandler.setAiFirst (false);
 			break;
 		case 13:
 			setBoardSize (1);
-			setLimitBridge (13);
+			setLimitBridge (11);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 14:
 			setBoardSize (1);
-			setLimitBridge (13);
+			setLimitBridge (11);
 			buttonHandler.setAiFirst (false);
 			break;
 		case 15:
 			setBoardSize (1);
-			setLimitBridge (13);
-			setLimitMoves (20);
+			setLimitBridge (11);
+			setLimitMoves (13);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 16:
 			setBoardSize (1);
-			setLimitBridge (13);
-			setLimitMoves (20);
+			setLimitBridge (11);
+			setLimitMoves (13);
 			buttonHandler.setAiFirst (false);
 			break;
 		case 17:
@@ -101,13 +101,13 @@ public class levelModifier : MonoBehaviour {
 		case 19:
 			setBoardSize (1);
 			setLimitBridge (10);
-			setLimitMoves (20);
+			setLimitMoves (12);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 20:
 			setBoardSize (1);
 			setLimitBridge (10);
-			setLimitMoves (20);
+			setLimitMoves (12);
 			buttonHandler.setAiFirst (false);
 			break;
 		case 21:
@@ -126,14 +126,14 @@ public class levelModifier : MonoBehaviour {
 			setBoardSize (1);
 			setLimitBridge (13);
 			setMustConnect (3);
-			setLimitMoves (20);
+			setLimitMoves (15);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 24:
 			setBoardSize (1);
 			setLimitBridge (13);
 			setMustConnect (3);
-			setLimitMoves (20);
+			setLimitMoves (15);
 			buttonHandler.setAiFirst (false);
 			break;
 		case 25:
@@ -152,14 +152,14 @@ public class levelModifier : MonoBehaviour {
 			setBoardSize (1);
 			setLimitBridge (10);
 			setMustConnect (3);
-			setLimitMoves (20);
+			setLimitMoves (12);
 			buttonHandler.setAiFirst (true);
 			break;
 		case 28:
 			setBoardSize (1);
 			setLimitBridge (10);
 			setMustConnect (3);
-			setLimitMoves (20);
+			setLimitMoves (12);
 			buttonHandler.setAiFirst (false);
 			break;
 		}

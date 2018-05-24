@@ -13,6 +13,7 @@ public class aiMode_init : MonoBehaviour {
 	public GameObject endGameCanvas;
 	public GameObject blueWinText;
 	public GameObject TooManyMovesText;
+	public GameObject collectFailText;
 	public GameObject finishText;
 	public GameObject redWinText;
 	public GameObject spentTimeText;
@@ -57,7 +58,7 @@ public class aiMode_init : MonoBehaviour {
 	private static bool blinking = false;
 	private static bool blinkingText = false;
 	public static int blinkSpeed = 50;
-	private static int counter = 0, count = 0;
+	private int counter = 0, count = 0;
 	public static int nodeNo = 0;
 	public static int maxBridges = 10;
 	public static int blueBridges = 10;
@@ -111,25 +112,27 @@ public class aiMode_init : MonoBehaviour {
 		levelText.GetComponent<Text>().text = level.ToString();
 		checkRedoButton ();
 
-		if (limitBridges) {
-			bridgeTopic.SetActive (true);
-			bridgeText.GetComponent<Text> ().text = blueBridges.ToString ();
-		}else {
-			bridgeTopic.SetActive (false);
-			bridgeText.SetActive (false);
-		}
-
-		if (limitMoves) {
-			moveTopic.SetActive (true);
-			moveText.GetComponent<Text> ().text = maxMoves.ToString ();
-		}else {
-			moveTopic.SetActive (false);
-			moveText.SetActive (false);
-		}
-
 		if (limitMoves && limitBridges) {
 			moveTopic.SetActive (true);
+			moveText.GetComponent<Text> ().text = maxMoves.ToString ();
 			bridgeTopic.SetActive (false);
+			bridgeText.GetComponent<Text> ().text = blueBridges.ToString ();
+		} else {
+			if (limitBridges) {
+				bridgeTopic.SetActive (true);
+				bridgeText.GetComponent<Text> ().text = blueBridges.ToString ();
+			} else {
+				bridgeTopic.SetActive (false);
+				bridgeText.SetActive (false);
+			}
+
+			if (limitMoves) {
+				moveTopic.SetActive (true);
+				moveText.GetComponent<Text> ().text = maxMoves.ToString ();
+			} else {
+				moveTopic.SetActive (false);
+				moveText.SetActive (false);
+			}
 		}
 
 		int i,j;
@@ -297,6 +300,7 @@ public class aiMode_init : MonoBehaviour {
 
 		if (limitMoves && limitBridges) {
 			if (counter == blinkSpeed) {
+				//Debug.Log ("<color=red>blink</color>");
 				blinkingText = !blinkingText;
 				if (blinkingText) {
 					moveTopic.SetActive (false);
@@ -342,10 +346,7 @@ public class aiMode_init : MonoBehaviour {
 	}
 
 	public static void updateMoves(){
-		if((maxMoves - blueEdgeRespond.moveCount) >= 0)
-			moveText.GetComponent<Text>().text = (maxMoves - blueEdgeRespond.moveCount).ToString();
-		else
-			moveText.GetComponent<Text>().text = "0";
+		moveText.GetComponent<Text>().text = (maxMoves - blueEdgeRespond.moveCount).ToString();
 	}
 
 	public static void setLevel(int lv){
@@ -519,42 +520,52 @@ public class aiMode_init : MonoBehaviour {
 	}
 
 	public void endgame(string winner){
-		//if (character.endMove || enemy.endMove) {
-			UIpanel.SetActive (true);
-		
-			if (winner.Equals ("blue")) {
-				if (level == 28) {
-					blueWinText.SetActive (false);
-					nextButton.SetActive (false);
-					replayButton.SetActive (true);
-					finishText.SetActive (true);
-				} else {
-					if (limitMoves && blueEdgeRespond.moveCount > maxMoves) {
-						AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
-						blueWinText.SetActive (false);
-						TooManyMovesText.SetActive (true);
-						replayButton.SetActive (true);
-						nextButton.SetActive (false);
-					} else {
-						AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
-						blueWinText.SetActive (true);
-						TooManyMovesText.SetActive (false);
-						replayButton.SetActive (false);
-						nextButton.SetActive (true);
-					}
-				}
-				spentTimeText.SetActive (true);
-				scoreText.SetActive (true);
-				spentTimeText.GetComponent<Text> ().text = "Time used: " + timer.getTime() + " seconds";
-			} else if (winner.Equals ("red")) {
-				AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
-				redWinText.SetActive (true);
-				spentTimeText.SetActive (false);
-				scoreText.SetActive (false);
-				replayButton.SetActive (true);
+		UIpanel.SetActive (true);
+	
+		if (winner.Equals ("blue")) {
+			Debug.Log ("<color=white>Collected bonus node: "+ blueEdgeRespond.collectedBonusNode +"</color>");
+			if (level == 28) {
+				AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
+				updateScore ("blue");
+				blueWinText.SetActive (false);
 				nextButton.SetActive (false);
+				replayButton.SetActive (true);
+				finishText.SetActive (true);
+			} else {
+				if (limitMoves && blueEdgeRespond.moveCount > maxMoves) {
+					AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
+					blueWinText.SetActive (false);
+					TooManyMovesText.SetActive (true);
+					collectFailText.SetActive (false);
+					replayButton.SetActive (true);
+					nextButton.SetActive (false);
+				} else if(mustConnect && blueEdgeRespond.collectedBonusNode == 0){
+					AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
+					blueWinText.SetActive (false);
+					collectFailText.SetActive (true);
+					replayButton.SetActive (true);
+					nextButton.SetActive (false);
+				} else {
+					AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
+					updateScore ("blue");
+					blueWinText.SetActive (true);
+					TooManyMovesText.SetActive (false);
+					collectFailText.SetActive (false);
+					replayButton.SetActive (false);
+					nextButton.SetActive (true);
+				}
 			}
-		//}
+			spentTimeText.SetActive (true);
+			scoreText.SetActive (true);
+			spentTimeText.GetComponent<Text> ().text = "Time used: " + timer.getTime() + " seconds";
+		} else if (winner.Equals ("red")) {
+			AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
+			redWinText.SetActive (true);
+			spentTimeText.SetActive (false);
+			scoreText.SetActive (false);
+			replayButton.SetActive (true);
+			nextButton.SetActive (false);
+		}
 	}
 
 	public static void reset(){

@@ -478,6 +478,53 @@ public class aiRespond : MonoBehaviour {
 		return false;
 	}
 
+	//catch winning strategy that cannot be stopped currently -> return caught or not
+	public static bool catchWinningStrategy(){
+		bool[,] blueCol = blueEdgeRespond.getVisitCol ();
+		bool[,] blueRow = blueEdgeRespond.getVisitRow ();
+
+		//check from top
+		for (int i = 0; i < aiMode_init.maxCol; i++) {
+			if (blueCol [0, i]) {
+				if (i+1<aiMode_init.maxCol && ((blueCol [2+aiMode_init.nodeNo, i + 1] && blueCol [3+aiMode_init.nodeNo, i + 1]) || (blueCol [1+aiMode_init.nodeNo, i + 1] && blueCol [2+aiMode_init.nodeNo, i + 1]))) {
+					Debug.Log ("check winning strategy");
+					if (!visitCol [0, i + 1]) {
+						placeColEdge (0, i + 1);
+						return true;
+					}
+				}
+				if (i - 1 >= 0 && ((blueCol [2+aiMode_init.nodeNo, i - 1] && blueCol [3+aiMode_init.nodeNo, i - 1]) || (blueCol [1+aiMode_init.nodeNo, i - 1] && blueCol [2+aiMode_init.nodeNo, i - 1]))) {
+					Debug.Log ("check winning strategy");
+					if (!visitCol [0, i]) {
+						placeColEdge (0, i);
+						return true;
+					}
+				}
+			}
+		}
+
+		//check from buttom
+		for (int i = 0; i < aiMode_init.maxCol; i++) {
+			if (blueCol [aiMode_init.maxCol-1, i]) {
+				if (i+1<aiMode_init.maxCol && ((blueCol [0, i + 1] && blueCol [1, i + 1]) || (blueCol [1, i + 1] && blueCol [2, i + 1]))) {
+					Debug.Log ("check winning strategy");
+					if (!visitCol [aiMode_init.maxRow - 1, i + 1]) {
+						placeColEdge (aiMode_init.maxRow - 1, i + 1);
+						return true;
+					}
+				}
+				if (i - 1 >= 0 && ((blueCol [0, i - 1] && blueCol [1, i - 1]) || (blueCol [1, i - 1] && blueCol [2, i - 1]))) {
+					Debug.Log ("check winning strategy");
+					if (!visitCol [aiMode_init.maxRow - 1, i]) {
+						placeColEdge (aiMode_init.maxRow - 1, i);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	//check path with Shannon Heuristic
 	public static void checkPath(){
 		int size = aiMode_init.maxCol;
@@ -521,6 +568,12 @@ public class aiRespond : MonoBehaviour {
 				else
 					placeRowEdge (cmX - 1, cmY);
 			}			
+			return;
+		}
+
+		bool t = catchWinningStrategy ();
+		Debug.Log ("caught: " + t);
+		if (t) {
 			return;
 		}
 
