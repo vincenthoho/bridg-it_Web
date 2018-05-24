@@ -531,6 +531,7 @@ public class aiMode_init : MonoBehaviour {
 				nextButton.SetActive (false);
 				replayButton.SetActive (true);
 				finishText.SetActive (true);
+				scoreText.SetActive (true);
 			} else {
 				if (limitMoves && blueEdgeRespond.moveCount > maxMoves) {
 					AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
@@ -539,25 +540,27 @@ public class aiMode_init : MonoBehaviour {
 					collectFailText.SetActive (false);
 					replayButton.SetActive (true);
 					nextButton.SetActive (false);
+					scoreText.SetActive (false);
 				} else if(mustConnect && blueEdgeRespond.collectedBonusNode == 0){
 					AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
 					blueWinText.SetActive (false);
 					collectFailText.SetActive (true);
 					replayButton.SetActive (true);
 					nextButton.SetActive (false);
+					scoreText.SetActive (false);
 				} else {
 					AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
 					updateScore ("blue");
 					blueWinText.SetActive (true);
 					TooManyMovesText.SetActive (false);
 					collectFailText.SetActive (false);
+					scoreText.SetActive (true);
 					replayButton.SetActive (false);
 					nextButton.SetActive (true);
 				}
 			}
-			spentTimeText.SetActive (true);
-			scoreText.SetActive (true);
 			spentTimeText.GetComponent<Text> ().text = "Time used: " + timer.getTime() + " seconds";
+			spentTimeText.SetActive (true);
 		} else if (winner.Equals ("red")) {
 			AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
 			redWinText.SetActive (true);
