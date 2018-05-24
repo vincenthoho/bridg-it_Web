@@ -11,7 +11,7 @@ public class csLogin : MonoBehaviour {
 	public Button loginBtn;
 
 	public int minID = 1;
-	public int maxID = 106;
+	public int maxID = 110;
 	public string debugID = "test";
 
 	void Start () {
