@@ -469,7 +469,7 @@ public class aiMode_init : MonoBehaviour {
 		Debug.Log ("<color=red> Move Score:" + moveScore + "</color>");
 
 		Debug.Log ("<color=red>Collected " + blueEdgeRespond.collectedBonusNode + " bonus nodes</color>");
-		int bonusScore = 20 * (blueEdgeRespond.collectedBonusNode / 2);
+		int bonusScore = 20 * (blueEdgeRespond.collectedBonusNode);
 
 		int retryScore = retries * 10;
 		Debug.Log ("<color=red>Retry Score:" + retryScore + "</color>");
@@ -479,25 +479,6 @@ public class aiMode_init : MonoBehaviour {
 			score = 0;
 
 		return score;
-
-		/*
-		if (limitMoves) {
-			if (timer.getTime () <= 30)
-				baseScore = 1000 + 100 * maxMoves;
-			else if (timer.getTime () <= 60)
-				baseScore = 500 + 100 * maxMoves;
-			else
-				baseScore = 100 + 100 * maxMoves;
-		} else {
-			if (timer.getTime () <= 30)
-				baseScore = 1000;
-			else if (timer.getTime () <= 60)
-				baseScore = 500;
-			else
-				baseScore = 100;
-		}
-		*/
-		//score = baseScore - 100*(blueEdgeRespond.stepCount-totalLength) + 200*(blueEdgeRespond.collectedBonusNode/2);
 	}
 
 	//Updating the player's score and new level to the scoreboard
@@ -541,7 +522,7 @@ public class aiMode_init : MonoBehaviour {
 					replayButton.SetActive (true);
 					nextButton.SetActive (false);
 					scoreText.SetActive (false);
-				} else if(mustConnect && blueEdgeRespond.collectedBonusNode < 1){
+				} else if(mustConnect && blueEdgeRespond.collectedBonusNode < 2){
 					AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
 					blueWinText.SetActive (false);
 					collectFailText.SetActive (true);

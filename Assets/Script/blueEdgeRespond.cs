@@ -22,7 +22,7 @@ public class blueEdgeRespond : MonoBehaviour {
 	public static bool checkmateCol = false;
 	public static bool skipLeft = false;
 	public static bool skipUp = false;
-	private static bool clicked = false;
+	//private static bool clicked = false;
 	private int mode;
 	private int row;
 	private int col;
@@ -40,7 +40,7 @@ public class blueEdgeRespond : MonoBehaviour {
 		role = "";
 		stepCount = 0;
 		moveCount = 0;
-		clicked = false;
+		//clicked = false;
 		blueMoves  = new ArrayList();
 		for (int i = 0; i < 4; i++)
 			visitRow [0, i] = true;
@@ -118,8 +118,8 @@ public class blueEdgeRespond : MonoBehaviour {
 	}
 	
 	public void OnMouseDownEvent(){
-		if (clicked)
-			return;
+		//if (clicked)
+		//	return;
 
 		Debug.Log (row + " " + col + " clicked blue");
 		if (myTurn && aiMode_init.blueBridges == 0 && (this.GetComponent<Image> ().color.a == 0))
@@ -136,7 +136,7 @@ public class blueEdgeRespond : MonoBehaviour {
 						aiMode_init.updateMoves ();
 					}
 					changeAlpha (255, this.transform);//display edge
-					clicked = true;
+					//clicked = true;
 					int size = aiMode_init.maxCol;
 					Debug.Log ("set resistance at " + (size*size+(size-1)*(row-1)+col));
 					//shannon.setResistance(size*size+(size-1)*(row-1)+col,(float)decimal.Parse("1E-08", NumberStyles.Float));
@@ -176,7 +176,7 @@ public class blueEdgeRespond : MonoBehaviour {
 						aiMode_init.updateMoves ();
 					}
 					changeAlpha (255, this.transform);
-					clicked = true;
+					//clicked = true;
 					Debug.Log ("set resistance at " + (row*aiMode_init.maxCol+col));
 					//shannon.setResistance (row*aiMode_init.maxCol+col, (float)decimal.Parse("1E-08", NumberStyles.Float));
 					shannon.setResistance (row*aiMode_init.maxCol+col, 0);
@@ -208,7 +208,7 @@ public class blueEdgeRespond : MonoBehaviour {
 			//remove bridge
 			if (this.role == "Row") {
 				e = new Edge (row, col, "Row", this.transform);
-				if (row != 0) {
+				if (row != 0 && row != aiMode_init.totalLength) {
 					shannon.setResistance (aiMode_init.maxCol * aiMode_init.maxCol + (aiMode_init.maxCol - 1) * (row - 1) + col, 1);
 					visitRow [row, col] = false;
 					stepCount--;
@@ -241,7 +241,7 @@ public class blueEdgeRespond : MonoBehaviour {
 		int second = Random.Range (1, 3);
 		Debug.Log ("Waiting for " + second);
 		myTurn = false;
-		clicked = false;
+		//clicked = false;
 		aiMode_init.switchTurn ("ai");
 		Debug.Log ("<color=green>switchTurn(ai)</color>");
 
@@ -437,14 +437,15 @@ public class blueEdgeRespond : MonoBehaviour {
 					foundRowList = new ArrayList ();
 					Coordination cord = new Coordination(0,i);
 					foundRowList.Add(cord);
-					won = findNextEdge(0,i,1,foundRowList);
+					//won = findNextEdge(0,i,1,foundRowList);
+					won = setPathArray(cord, foundRowList, length, length, false);
 					if (won) {
 						//StartCoroutine(winAnimation (foundRowList));
 						//ch.SetActive(true);
 						Camera.main.SendMessage("disableButtons");
 
 						ArrayList path = new ArrayList ();
-						/*
+
 						//set first path
 						Coordination coor = (Coordination)foundRowList[0];
 						addPath (coor.getX (), coor.getY (), path);
@@ -453,7 +454,7 @@ public class blueEdgeRespond : MonoBehaviour {
 						setPathArray (c, path, length, length, false);
 						checkConnectBonusNode (path);
 						//character.winAnimation(path);
-						*/
+
 						break;
 					}
 				}
@@ -1072,7 +1073,7 @@ public class blueEdgeRespond : MonoBehaviour {
 		checkmateCol = false;
 		skipLeft = false;
 		skipUp = false;
-		clicked = false;
+		//clicked = false;
 		checkmatePath = new ArrayList ();
 		stepCount = 0;
 		collectedBonusNode = 0;
