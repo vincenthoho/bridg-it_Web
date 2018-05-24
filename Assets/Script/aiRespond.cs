@@ -488,14 +488,14 @@ public class aiRespond : MonoBehaviour {
 			if (blueCol [0, i]) {
 				if (i+1<aiMode_init.maxCol && ((blueCol [2+aiMode_init.nodeNo, i + 1] && blueCol [3+aiMode_init.nodeNo, i + 1]) || (blueCol [1+aiMode_init.nodeNo, i + 1] && blueCol [2+aiMode_init.nodeNo, i + 1]))) {
 					Debug.Log ("check winning strategy");
-					if (!visitCol [0, i + 1]) {
+					if (!visitCol [0, i + 1] && !blockedCol[0, i+1]) {
 						placeColEdge (0, i + 1);
 						return true;
 					}
 				}
 				if (i - 1 >= 0 && ((blueCol [2+aiMode_init.nodeNo, i - 1] && blueCol [3+aiMode_init.nodeNo, i - 1]) || (blueCol [1+aiMode_init.nodeNo, i - 1] && blueCol [2+aiMode_init.nodeNo, i - 1]))) {
 					Debug.Log ("check winning strategy");
-					if (!visitCol [0, i]) {
+					if (!visitCol [0, i] && !blockedCol[0,i]) {
 						placeColEdge (0, i);
 						return true;
 					}
@@ -508,14 +508,14 @@ public class aiRespond : MonoBehaviour {
 			if (blueCol [aiMode_init.maxCol-1, i]) {
 				if (i+1<aiMode_init.maxCol && ((blueCol [0, i + 1] && blueCol [1, i + 1]) || (blueCol [1, i + 1] && blueCol [2, i + 1]))) {
 					Debug.Log ("check winning strategy");
-					if (!visitCol [aiMode_init.maxRow - 1, i + 1]) {
+					if (!visitCol [aiMode_init.maxRow - 1, i + 1] && !blockedCol[aiMode_init.maxRow - 1, i + 1]) {
 						placeColEdge (aiMode_init.maxRow - 1, i + 1);
 						return true;
 					}
 				}
 				if (i - 1 >= 0 && ((blueCol [0, i - 1] && blueCol [1, i - 1]) || (blueCol [1, i - 1] && blueCol [2, i - 1]))) {
 					Debug.Log ("check winning strategy");
-					if (!visitCol [aiMode_init.maxRow - 1, i]) {
+					if (!visitCol [aiMode_init.maxRow - 1, i] && !blockedCol[aiMode_init.maxRow - 1, i + 1]) {
 						placeColEdge (aiMode_init.maxRow - 1, i);
 						return true;
 					}
