@@ -505,30 +505,30 @@ public class aiMode_init : MonoBehaviour {
 	
 		if (winner.Equals ("blue")) {
 			Debug.Log ("<color=white>Collected bonus node: "+ blueEdgeRespond.collectedBonusNode +"</color>");
-			if (level == 28) {
-				AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
-				updateScore ("blue");
+			if (limitMoves && blueEdgeRespond.moveCount > maxMoves) {
+				AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
 				blueWinText.SetActive (false);
-				nextButton.SetActive (false);
+				TooManyMovesText.SetActive (true);
+				collectFailText.SetActive (false);
 				replayButton.SetActive (true);
-				finishText.SetActive (true);
-				scoreText.SetActive (true);
+				nextButton.SetActive (false);
+				scoreText.SetActive (false);
+			} else if(mustConnect && blueEdgeRespond.collectedBonusNode < 2){
+				AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
+				blueWinText.SetActive (false);
+				collectFailText.SetActive (true);
+				replayButton.SetActive (true);
+				nextButton.SetActive (false);
+				scoreText.SetActive (false);
 			} else {
-				if (limitMoves && blueEdgeRespond.moveCount > maxMoves) {
-					AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
+				if (level == 28) {
+					AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
+					updateScore ("blue");
 					blueWinText.SetActive (false);
-					TooManyMovesText.SetActive (true);
-					collectFailText.SetActive (false);
-					replayButton.SetActive (true);
 					nextButton.SetActive (false);
-					scoreText.SetActive (false);
-				} else if(mustConnect && blueEdgeRespond.collectedBonusNode < 2){
-					AudioSource.PlayClipAtPoint (failSE, Camera.main.transform.position);
-					blueWinText.SetActive (false);
-					collectFailText.SetActive (true);
 					replayButton.SetActive (true);
-					nextButton.SetActive (false);
-					scoreText.SetActive (false);
+					finishText.SetActive (true);
+					scoreText.SetActive (true);
 				} else {
 					AudioSource.PlayClipAtPoint (winClaps, Camera.main.transform.position);
 					updateScore ("blue");
