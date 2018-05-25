@@ -487,7 +487,7 @@ public class aiRespond : MonoBehaviour {
 			if (blueCol [0, i]) {
 				if (i+1<aiMode_init.maxCol && ((blueCol [2+aiMode_init.nodeNo, i + 1] && blueCol [3+aiMode_init.nodeNo, i + 1]) || (blueCol [1+aiMode_init.nodeNo, i + 1] && blueCol [2+aiMode_init.nodeNo, i + 1]))) {
 					Debug.Log ("check winning strategy");
-					if (!visitRow [0, i + 1] && !blockedCol[0, i+1]) {
+					if (!visitCol [0, i + 1] && !blockedCol[0, i+1]) {
 						placeColEdge (0, i + 1);
 						return true;
 					}
